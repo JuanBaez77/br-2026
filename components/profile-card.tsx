@@ -8,6 +8,7 @@ import { Instagram, Twitter, Heart, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { Profile } from "@/lib/data"
 import { cn } from "@/lib/utils"
+import { MotionCard } from "@/components/ui/motion"
 
 interface ProfileCardProps {
   profile: Profile
@@ -30,7 +31,7 @@ export function ProfileCard({ profile, onVote, onSelect, hasVoted }: ProfileCard
   }
 
   return (
-    <div 
+    <MotionCard 
       className="group relative overflow-hidden rounded-2xl bg-card border border-border cursor-pointer transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10"
       onClick={() => onSelect(profile)}
     >
@@ -42,6 +43,14 @@ export function ProfileCard({ profile, onVote, onSelect, hasVoted }: ProfileCard
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+        
+        {/* Role Badge */}
+        <div className={cn(
+          "absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white shadow-lg",
+          profile.roleColor
+        )}>
+          {profile.role}
+        </div>
         
         {/* Social icons */}
         <div className="absolute top-3 right-3 flex gap-2">
@@ -98,6 +107,6 @@ export function ProfileCard({ profile, onVote, onSelect, hasVoted }: ProfileCard
           )}
         </Button>
       </div>
-    </div>
+    </MotionCard>
   )
 }

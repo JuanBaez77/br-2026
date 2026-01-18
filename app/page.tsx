@@ -1,12 +1,14 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import { motion } from "framer-motion"
 import { profiles as initialProfiles, type Profile } from "@/lib/data"
 import { LandingHero } from "@/components/landing-hero"
 import { NavHeader } from "@/components/nav-header"
 import { ProfileCard } from "@/components/profile-card"
 import { ProfileModal } from "@/components/profile-modal"
 import { StatsView } from "@/components/stats-view"
+import { FadeIn, StaggerContainer, fadeInVariant } from "@/components/ui/motion"
 
 type View = "landing" | "profiles" | "stats"
 
@@ -41,11 +43,13 @@ export default function Home() {
       <NavHeader currentView={view} onNavigate={handleNavigate} />
       
       {view === "landing" && (
-        <LandingHero onStart={() => setView("profiles")} />
+        <FadeIn>
+          <LandingHero onStart={() => setView("profiles")} />
+        </FadeIn>
       )}
       
       {view === "profiles" && (
-        <div className="px-4 py-6 max-w-lg mx-auto">
+        <FadeIn className="px-4 py-6 max-w-lg mx-auto">
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-bold text-foreground">Perfiles</h2>
             <p className="text-muted-foreground text-sm mt-1">
@@ -53,24 +57,25 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
+          <StaggerContainer className="grid grid-cols-2 gap-3">
             {profiles.map((profile) => (
-              <ProfileCard
-                key={profile.id}
-                profile={profile}
-                onVote={handleVote}
-                onSelect={setSelectedProfile}
-                hasVoted={votedId !== null}
-              />
+              <motion.div key={profile.id} variants={fadeInVariant}>
+                <ProfileCard
+                  profile={profile}
+                  onVote={handleVote}
+                  onSelect={setSelectedProfile}
+                  hasVoted={votedId !== null}
+                />
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </StaggerContainer>
+        </FadeIn>
       )}
       
       {view === "stats" && (
-        <div className="px-4 py-6 max-w-lg mx-auto">
+        <FadeIn className="px-4 py-6 max-w-lg mx-auto">
           <StatsView profiles={profiles} />
-        </div>
+        </FadeIn>
       )}
       
       {/* Profile Modal */}
@@ -85,12 +90,17 @@ export default function Home() {
       
       {/* Vote Toast */}
       {showVoteToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
+        <motion.div 
+          initial={{ opacity: 0, y: 20, x: "-50%" }}
+          animate={{ opacity: 1, y: 0, x: "-50%" }}
+          exit={{ opacity: 0, y: 20, x: "-50%" }}
+          className="fixed bottom-6 left-1/2 z-50"
+        >
           <div className="px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/25 flex items-center gap-2">
             <span className="text-xl">🎉</span>
             <span>¡Voto registrado!</span>
           </div>
-        </div>
+        </motion.div>
       )}
     </main>
   )

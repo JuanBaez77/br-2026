@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { motion } from "framer-motion"
 import { X, Instagram, Twitter, Heart, Sparkles, Ruler, Weight, Zap, Dumbbell, Activity } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -12,6 +13,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { MotionElement } from "@/components/ui/motion"
 import type { Profile } from "@/lib/data"
 import { cn } from "@/lib/utils"
 
@@ -35,12 +37,20 @@ export function ProfileModal({ profile, onClose, onVote, hasVoted }: ProfileModa
   }
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-background/80 backdrop-blur-sm animate-in fade-in duration-200"
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-background/80 backdrop-blur-sm"
       onClick={onClose}
     >
-      <div 
-        className="relative w-full max-w-lg bg-card border border-border rounded-t-3xl sm:rounded-3xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300 max-h-[90vh] overflow-y-auto"
+      <motion.div 
+        initial={{ y: 50, opacity: 0, scale: 0.95 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: 50, opacity: 0, scale: 0.95 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="relative w-full max-w-lg bg-card border border-border rounded-t-3xl sm:rounded-3xl overflow-hidden max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
@@ -92,7 +102,13 @@ export function ProfileModal({ profile, onClose, onVote, hasVoted }: ProfileModa
           {/* Stats Section */}
           {profile.stats && (
             <div className="mb-8 space-y-4">
-              <h3 className="text-lg font-semibold mb-3">Estadísticas</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold">Estadísticas</h3>
+                <div className="flex items-center gap-2 text-sm font-medium bg-secondary/50 px-3 py-1 rounded-full border border-border/50">
+                  <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                  {profile.zodiac}
+                </div>
+              </div>
               
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50">
@@ -170,34 +186,36 @@ export function ProfileModal({ profile, onClose, onVote, hasVoted }: ProfileModa
           </div>
           
           {/* Vote button */}
-          <Button
-            onClick={handleVote}
-            disabled={hasVoted}
-            size="lg"
-            className={cn(
-              "w-full gap-2 font-semibold text-lg py-6 transition-all duration-300",
-              hasVoted 
-                ? "bg-muted text-muted-foreground" 
-                : "bg-primary text-primary-foreground hover:bg-primary/90",
-              isVoting && "animate-pulse"
-            )}
-          >
-            {isVoting ? (
-              <>
-                <Sparkles className="w-5 h-5 animate-spin" />
-                Votando...
-              </>
-            ) : hasVoted ? (
-              "Ya votaste"
-            ) : (
-              <>
-                <Heart className="w-5 h-5" />
-                Votar por {profile.name}
-              </>
-            )}
-          </Button>
+          <MotionElement>
+            <Button
+              onClick={handleVote}
+              disabled={hasVoted}
+              size="lg"
+              className={cn(
+                "w-full gap-2 font-semibold text-lg py-6 transition-all duration-300",
+                hasVoted 
+                  ? "bg-muted text-muted-foreground" 
+                  : "bg-primary text-primary-foreground hover:bg-primary/90",
+                isVoting && "animate-pulse"
+              )}
+            >
+              {isVoting ? (
+                <>
+                  <Sparkles className="w-5 h-5 animate-spin" />
+                  Votando...
+                </>
+              ) : hasVoted ? (
+                "Ya votaste"
+              ) : (
+                <>
+                  <Heart className="w-5 h-5" />
+                  Votar por {profile.name}
+                </>
+              )}
+            </Button>
+          </MotionElement>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
