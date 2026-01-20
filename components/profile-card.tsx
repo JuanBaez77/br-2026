@@ -2,34 +2,18 @@
 
 import React from "react"
 
-import { useState } from "react"
 import Image from "next/image"
-import { Instagram, Twitter, Heart, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Instagram, Twitter } from "lucide-react"
 import type { Profile } from "@/lib/data"
 import { cn } from "@/lib/utils"
 import { MotionCard } from "@/components/ui/motion"
 
 interface ProfileCardProps {
   profile: Profile
-  onVote: (id: string) => void
   onSelect: (profile: Profile) => void
-  hasVoted: boolean
 }
 
-export function ProfileCard({ profile, onVote, onSelect, hasVoted }: ProfileCardProps) {
-  const [isVoting, setIsVoting] = useState(false)
-
-  const handleVote = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (hasVoted) return
-    
-    setIsVoting(true)
-    onVote(profile.id)
-    
-    setTimeout(() => setIsVoting(false), 600)
-  }
-
+export function ProfileCard({ profile, onSelect }: ProfileCardProps) {
   return (
     <MotionCard 
       className="group relative overflow-hidden rounded-2xl bg-card border border-border cursor-pointer transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10"
@@ -79,33 +63,7 @@ export function ProfileCard({ profile, onVote, onSelect, hasVoted }: ProfileCard
       
       <div className="absolute bottom-0 left-0 right-0 p-4">
         <h3 className="text-xl font-semibold text-foreground mb-1">{profile.name}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{profile.bio}</p>
-        
-        <Button
-          onClick={handleVote}
-          disabled={hasVoted}
-          className={cn(
-            "w-full gap-2 font-semibold transition-all duration-300",
-            hasVoted 
-              ? "bg-muted text-muted-foreground" 
-              : "bg-primary text-primary-foreground hover:bg-primary/90",
-            isVoting && "animate-pulse"
-          )}
-        >
-          {isVoting ? (
-            <>
-              <Sparkles className="w-4 h-4 animate-spin" />
-              Votando...
-            </>
-          ) : hasVoted ? (
-            "Ya votaste"
-          ) : (
-            <>
-              <Heart className="w-4 h-4" />
-              Votar
-            </>
-          )}
-        </Button>
+        <p className="text-sm text-muted-foreground line-clamp-2">{profile.bio}</p>
       </div>
     </MotionCard>
   )

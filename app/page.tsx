@@ -62,9 +62,7 @@ export default function Home() {
               <motion.div key={profile.id} variants={fadeInVariant}>
                 <ProfileCard
                   profile={profile}
-                  onVote={handleVote}
                   onSelect={setSelectedProfile}
-                  hasVoted={votedId !== null}
                 />
               </motion.div>
             ))}
